@@ -1,8 +1,8 @@
-# Your Name — Portfolio
+# Amara Oriaku — Portfolio
 
 Personal portfolio site showcasing MIS & data science projects.
 
-Live at: https://yourusername.github.io
+Live at: https://amara-lin.github.io
 
 ## Structure
 - `index.html` — the whole site (HTML/CSS/JS in one file, no build step needed)
