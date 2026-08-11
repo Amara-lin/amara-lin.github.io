@@ -663,7 +663,6 @@
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
-//  document.getElementById('year').textContent = new Date().getFullYear();
   // CURSOR — small pink dot at tip + trail
   const cursor = document.getElementById('cursor');
   document.addEventListener('mousemove', e => {
@@ -723,7 +722,7 @@
     });
   })();
    /* ---- end of trial---- */
-  
+  document.getElementById('year').textContent = new Date().getFullYear();
 
   /* ---- Scroll reveal ---- */
   const revealEls = document.querySelectorAll('.reveal');
