@@ -700,6 +700,29 @@
     el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
   });
     /* ---- end of trial---- */
+
+ // Pause on hover (only auto, not manual)
+    const wrapper = track.closest('.portfolio-marquee-wrapper');
+    wrapper.addEventListener('mouseenter', () => isPaused = true);
+    wrapper.addEventListener('mouseleave', () => { isPaused = false; activeDir = 0; manualVel = 0; });
+
+    // Arrow hold-to-glide
+    function startDir(d) { activeDir = d; }
+    function stopDir()   { activeDir = 0; }
+
+    leftBtn.addEventListener('mousedown',  () => startDir(-1));
+    rightBtn.addEventListener('mousedown', () => startDir(1));
+    document.addEventListener('mouseup',   stopDir);
+    leftBtn.addEventListener('mouseleave', stopDir);
+    rightBtn.addEventListener('mouseleave', stopDir);
+
+    // cursor hovering
+    [leftBtn, rightBtn].forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+    });
+  })();
+   /* ---- end of trial---- */
   document.getElementById('year').textContent = new Date().getFullYear();
 
   /* ---- Scroll reveal ---- */
