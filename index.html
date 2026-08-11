@@ -25,13 +25,30 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
 
+  body { cursor: none; }
+  .cursor {
+    width: 9px; height: 9px; background: var(--blue);
+    border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
+  }
+  .cursor.hovering { width: 16px; height: 16px; background: var(--purple); }
+  @media (hover: none) and (pointer: coarse) {
+    body { cursor: auto !important; }
+    .cursor { display: none !important; }
+  }
+
   body {
-    background: var(--bg);
+    background-color: var(--bg);
     color: var(--text);
     font-family: var(--body);
     font-size: 19px;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(var(--border) 1.4px, transparent 1.4px),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    background-size: 24px 24px, 300px 300px;
   }
 
   a { color: inherit; }
@@ -78,8 +95,8 @@
   .eyebrow { font-family: var(--script); font-style: italic; font-weight: 400; font-size: 1.3rem; color: var(--purple); margin-bottom: 4px; }
   .hero h1 { font-size: clamp(2.6rem, 7vw, 4.2rem); line-height: 1.1; margin-bottom: 16px; }
   .hero h1 em { font-style: italic; color: var(--blue); }
-  .hero p.bio { color: var(--text-dim); font-size: 1.1rem; max-width: 500px; margin: 0 auto 14px; }
-  .degree-line { font-size: 0.92rem; color: var(--blue); font-weight: 600; margin-bottom: 30px; }
+  .degree-line { font-size: 0.92rem; color: var(--blue); font-weight: 600; margin-bottom: 14px; }
+  .hero p.bio { color: var(--text-dim); font-size: 1.1rem; max-width: 500px; margin: 0 auto 30px; }
   .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
   .btn {
@@ -96,15 +113,30 @@
   .section { padding: 80px 0; text-align: center; }
   .section h2 { font-size: clamp(1.6rem, 3.5vw, 2.1rem); margin-bottom: 40px; }
 
-  /* ---------- SKILLS ---------- */
-  .tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; justify-content: center; }
-  .tab-btn {
-    font-family: var(--body); font-weight: 600; font-size: 0.92rem;
-    padding: 10px 20px; border-radius: 999px; border: 1.5px solid var(--border);
-    background: #fff; color: var(--text); cursor: pointer;
-    transition: all 0.25s ease;
+  /* ---------- SKILLS: BUBBLES ---------- */
+  .bubbles-row {
+    display: flex; gap: 34px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 36px; transition: gap 0.4s ease;
   }
-  .tab-btn.active, .tab-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .bubble {
+    width: 130px; height: 130px; border-radius: 50%; border: none; cursor: pointer;
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    color: #fff; font-family: var(--body); font-weight: 700; font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 18px; line-height: 1.25;
+    box-shadow: 0 14px 26px -12px rgba(39,72,201,0.45);
+    transition: all 0.45s cubic-bezier(.34,1.56,.64,1);
+  }
+  .bubble:hover { transform: translateY(-4px) scale(1.04); }
+  .bubbles-row.docked { gap: 10px; }
+  .bubbles-row.docked .bubble {
+    width: auto; height: auto; border-radius: 999px; padding: 10px 20px;
+    font-size: 0.88rem; box-shadow: none; background: #fff; color: var(--text);
+    border: 1.5px solid var(--border);
+  }
+  .bubbles-row.docked .bubble.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .bubbles-row.docked .bubble:hover { transform: translateY(-2px) scale(1); }
+
   .tab-panel { display: none; }
   .tab-panel.active { display: block; animation: fadeIn 0.4s ease; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -119,91 +151,49 @@
   .skill-chip:hover { transform: translateY(-3px); box-shadow: 0 10px 18px -10px rgba(124,92,252,0.35); }
   .skill-chip.placeholder { border-style: dashed; color: var(--text-dim); font-weight: 500; background: transparent; }
 
-  /* ---------- EXPERIENCE GALLERY ---------- */
-  .history-gallery {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px; text-align: left;
+  /* ---------- EXPERIENCE TIMELINE ---------- */
+  .timeline { position: relative; padding-left: 32px; text-align: left; max-width: 580px; margin: 0 auto; }
+  .timeline::before {
+    content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 2px;
+    background: var(--border);
   }
-  .history-card {
-    background: #fff; border: 1px solid var(--border); border-radius: 12px;
-    padding: 22px; max-height: 250px; overflow-y: auto;
-    scrollbar-width: thin; scrollbar-color: var(--blue) transparent;
+  .t-item { position: relative; padding-bottom: 38px; }
+  .t-item:last-child { padding-bottom: 0; }
+  .t-dot {
+    position: absolute; left: -32px; top: 4px; width: 15px; height: 15px; border-radius: 50%;
+    background: #fff; border: 3px solid var(--blue); z-index: 1; transition: background 0.3s ease;
+  }
+  .t-item.visible .t-dot { background: var(--purple); border-color: var(--purple); }
+  .t-role { font-family: var(--display); font-size: 1.15rem; color: var(--text); margin-bottom: 3px; }
+  .t-meta { font-size: 0.8rem; color: var(--blue); font-weight: 700; margin-bottom: 8px; letter-spacing: 0.02em; }
+  .t-desc { color: var(--text-dim); font-size: 0.95rem; }
+
+  /* ---------- PROJECTS: LINKED CARD GRID ---------- */
+  .featured-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; margin-bottom: 40px; text-align: left; }
+  .sub-label {
+    font-family: var(--body); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-dim); margin: 0 0 20px; text-align: left;
+  }
+  .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; text-align: left; }
+  .project-link { text-decoration: none; color: inherit; display: block; }
+  .project-card {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
-  .history-card:hover { transform: translateY(-4px); box-shadow: 0 16px 28px -18px rgba(52,87,213,0.3); }
-  .h-role { font-family: var(--display); font-size: 1.08rem; color: var(--text); margin-bottom: 3px; }
-  .h-meta { font-size: 0.8rem; color: var(--blue); font-weight: 700; margin-bottom: 10px; letter-spacing: 0.02em; }
-  .h-desc { color: var(--text-dim); font-size: 0.95rem; white-space: pre-wrap; }
-
-  /* ---------- PROJECTS: MARQUEE ---------- */
-  .marquee-wrap {
-    width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;
-    overflow: hidden; padding: 6px 0; margin-bottom: 44px;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  }
-  .marquee-track {
-    display: flex; gap: 14px; width: max-content;
-    animation: marquee 26s linear infinite;
-  }
-  .marquee-track:hover { animation-play-state: paused; }
-  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-  @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
-
-  .m-card {
-    font-family: var(--body); font-weight: 700; font-size: 0.95rem;
-    padding: 12px 24px; border-radius: 999px; border: 1.5px solid var(--border);
-    background: #fff; color: var(--text); cursor: pointer; white-space: nowrap;
-    transition: all 0.25s ease;
-  }
-  .m-card.active { background: var(--blue); border-color: var(--blue); color: #fff; }
-  .m-card:hover { border-color: var(--blue); }
-
-  /* ---------- PROJECTS: DETAIL PANEL ---------- */
-  .project-detail { display: none; text-align: left; }
-  .project-detail.active { display: block; animation: fadeIn 0.4s ease; }
-  .project-detail h3 { font-size: 1.5rem; margin-bottom: 8px; }
+  .project-link:hover .project-card { transform: translateY(-6px); box-shadow: 0 18px 32px -18px rgba(52,87,213,0.35); }
+  .project-img-wrap { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: var(--surface); }
+  .project-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .project-link:hover .project-img { transform: scale(1.06); }
+  .project-body { padding: 18px 20px 22px; }
+  .featured-grid .project-body { padding: 20px 22px 24px; }
+  .project-card .p-tag { margin-bottom: 8px; }
+  .project-card h3 { font-size: 1.1rem; margin-bottom: 6px; }
+  .featured-grid .project-card h3 { font-size: 1.3rem; }
+  .project-card p { color: var(--text-dim); font-size: 0.88rem; }
   .p-tag {
-    display: inline-block; font-family: var(--body); font-weight: 600; font-size: 0.78rem;
-    color: var(--blue); border: 1px solid var(--border); border-radius: 999px;
-    padding: 4px 14px; margin-bottom: 20px;
+    display: inline-block; font-family: var(--body); font-weight: 700; font-size: 0.68rem;
+    letter-spacing: 0.06em; text-transform: uppercase; color: var(--purple);
   }
-  .p-properties {
-    border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
-    margin-bottom: 22px; font-size: 0.9rem;
-  }
-  .p-prop { display: flex; border-bottom: 1px solid var(--border); }
-  .p-prop:last-child { border-bottom: none; }
-  .p-prop span:first-child {
-    width: 34%; padding: 10px 14px; font-weight: 700; color: var(--text);
-    background: var(--surface); border-right: 1px solid var(--border);
-  }
-  .p-prop span:last-child { padding: 10px 14px; color: var(--text-dim); }
-  .p-prop a { color: var(--blue); text-decoration: none; border-bottom: 1px dashed var(--blue); }
-
-  .p-photos { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
-  .p-photo {
-    width: 120px; height: 120px; border: 1px dashed var(--border); border-radius: 8px;
-    display: flex; align-items: center; justify-content: center; text-align: center;
-    font-size: 0.75rem; color: var(--text-dim); padding: 8px; flex-shrink: 0; background: var(--surface);
-  }
-
-  .p-longtext { color: var(--text-dim); font-size: 1rem; }
-  .p-longtext p { margin-bottom: 14px; }
-  .p-longtext img { width: 100%; border-radius: 8px; margin: 14px 0; }
-
-  .case-quote {
-    border-left: 3px solid var(--blue); padding-left: 18px;
-    font-style: italic; color: var(--text-dim); font-size: 1.2rem;
-    margin: 4px 0 30px; line-height: 1.6;
-  }
-  .case-label {
-    font-family: var(--body); font-weight: 700; font-size: 0.75rem;
-    letter-spacing: 0.1em; color: var(--blue); text-transform: uppercase; margin-bottom: 8px;
-  }
-  .case-block { margin-bottom: 30px; }
-  .case-block h4 { font-family: var(--display); font-weight: 600; font-size: 1.35rem; margin-bottom: 8px; color: var(--text); }
-  .case-block p { color: var(--text-dim); }
 
   /* ---------- EDUCATION / COMMUNITY CARDS ---------- */
   .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; text-align: left; }
@@ -281,6 +271,9 @@
     body { font-size: 17px; }
     .contact-box { flex-direction: column; padding: 24px; max-width: 320px; }
     .contact-box-photo { width: 100%; max-width: none; aspect-ratio: 16/9; }
+    .featured-grid { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .bubble { width: 100px; height: 100px; font-size: 0.75rem; }
   }
 </style>
 </head>
@@ -304,12 +297,12 @@
 <!-- ===== 1. INTRO ===== -->
 <header class="hero wrap" id="intro">
   <h1 class="reveal">Hi, I'm <em>Your Name</em>.</h1>
+  <p class="degree-line reveal">B.A. in Your Major · Your University</p>
   <p class="bio reveal">
     Replace this with 2–3 sentences about who you are, what you study or do, and
     what kind of work lights you up. Keep it warm and specific — this is the first
     thing people read.
   </p>
-  <p class="degree-line reveal">B.A. in Your Major · Your University</p>
   <div class="hero-actions reveal">
     <a class="btn btn-primary" href="#projects">See my work</a>
     <a class="btn btn-ghost" href="resume.pdf" target="_blank">Resume</a>
@@ -321,10 +314,10 @@
   <div class="wrap">
     <h2 class="reveal">Technical Skills</h2>
 
-    <div class="tabs reveal">
-      <button class="tab-btn active" data-tab="pm">Project Management &amp; AI</button>
-      <button class="tab-btn" data-tab="lang">Programming Languages</button>
-      <button class="tab-btn" data-tab="design">Visual &amp; Design</button>
+    <div class="bubbles-row" id="bubblesRow">
+      <button class="bubble" data-tab="pm">Project Management &amp; AI</button>
+      <button class="bubble" data-tab="lang">Programming Languages</button>
+      <button class="bubble" data-tab="design">Visual &amp; Design</button>
     </div>
 
     <div class="tab-panel active" id="pm">
@@ -359,36 +352,36 @@
   <div class="wrap">
     <h2 class="reveal">Professional History</h2>
 
-    <div class="history-gallery">
-      <div class="history-card reveal">
-        <div class="h-role">Job Title One</div>
-        <div class="h-meta">Company Name · 20XX – 20XX</div>
-        <p class="h-desc">Paste as much text here as you need — this card scrolls internally, so a long paragraph or bullet list won't break the layout.</p>
+    <div class="timeline">
+      <div class="t-item reveal"><div class="t-dot"></div>
+        <div class="t-role">Job Title One</div>
+        <div class="t-meta">Company Name · 20XX – 20XX</div>
+        <p class="t-desc">One or two lines on what you did and the impact you had. Lead with the outcome.</p>
       </div>
-      <div class="history-card reveal">
-        <div class="h-role">Job Title Two</div>
-        <div class="h-meta">Company Name · 20XX – 20XX</div>
-        <p class="h-desc">Same pattern — role, scope, result.</p>
+      <div class="t-item reveal"><div class="t-dot"></div>
+        <div class="t-role">Job Title Two</div>
+        <div class="t-meta">Company Name · 20XX – 20XX</div>
+        <p class="t-desc">Same pattern — role, scope, result.</p>
       </div>
-      <div class="history-card reveal">
-        <div class="h-role">Job Title Three</div>
-        <div class="h-meta">Company Name · 20XX – 20XX</div>
-        <p class="h-desc">Same pattern — role, scope, result.</p>
+      <div class="t-item reveal"><div class="t-dot"></div>
+        <div class="t-role">Job Title Three</div>
+        <div class="t-meta">Company Name · 20XX – 20XX</div>
+        <p class="t-desc">Same pattern — role, scope, result.</p>
       </div>
-      <div class="history-card reveal">
-        <div class="h-role">Job Title Four</div>
-        <div class="h-meta">Company Name · 20XX – 20XX</div>
-        <p class="h-desc">Same pattern — role, scope, result.</p>
+      <div class="t-item reveal"><div class="t-dot"></div>
+        <div class="t-role">Job Title Four</div>
+        <div class="t-meta">Company Name · 20XX – 20XX</div>
+        <p class="t-desc">Same pattern — role, scope, result.</p>
       </div>
-      <div class="history-card reveal">
-        <div class="h-role">Job Title Five</div>
-        <div class="h-meta">Company Name · 20XX – 20XX</div>
-        <p class="h-desc">Same pattern — role, scope, result.</p>
+      <div class="t-item reveal"><div class="t-dot"></div>
+        <div class="t-role">Job Title Five</div>
+        <div class="t-meta">Company Name · 20XX – 20XX</div>
+        <p class="t-desc">Same pattern — role, scope, result.</p>
       </div>
-      <div class="history-card reveal">
-        <div class="h-role">Job Title Six</div>
-        <div class="h-meta">Company Name · 20XX – 20XX</div>
-        <p class="h-desc">Same pattern — role, scope, result.</p>
+      <div class="t-item reveal"><div class="t-dot"></div>
+        <div class="t-role">Job Title Six</div>
+        <div class="t-meta">Company Name · 20XX – 20XX</div>
+        <p class="t-desc">Same pattern — role, scope, result.</p>
       </div>
     </div>
   </div>
@@ -398,180 +391,76 @@
 <section class="section" id="projects">
   <div class="wrap">
     <h2 class="reveal">Featured Projects</h2>
-  </div>
 
-  <div class="marquee-wrap">
-    <div class="marquee-track" id="marqueeTrack">
-      <button class="m-card active" data-project="0">UBC's Largest Annual Hackathon</button>
-      <button class="m-card" data-project="1">Project Title Two</button>
-      <button class="m-card" data-project="2">Project Title Three</button>
-      <button class="m-card" data-project="3">Project Title Four</button>
-      <button class="m-card" data-project="4">Project Title Five</button>
-      <button class="m-card" data-project="5">Project Title Six</button>
-      <button class="m-card" data-project="0">UBC's Largest Annual Hackathon</button>
-      <button class="m-card" data-project="1">Project Title Two</button>
-      <button class="m-card" data-project="2">Project Title Three</button>
-      <button class="m-card" data-project="3">Project Title Four</button>
-      <button class="m-card" data-project="4">Project Title Five</button>
-      <button class="m-card" data-project="5">Project Title Six</button>
-    </div>
-  </div>
+    <div class="featured-grid">
+      <a class="project-link reveal" href="https://github.com/yourusername/project-one" target="_blank">
+        <article class="project-card">
+          <div class="project-img-wrap"><img src="assets/project-one.jpg" alt="Project One" class="project-img"></div>
+          <div class="project-body">
+            <span class="p-tag">Project Management</span>
+            <h3>UBC's Largest Annual Hackathon</h3>
+            <p>Building UBC's largest annual hackathon — planning, sponsors, and the day-of run of show.</p>
+          </div>
+        </article>
+      </a>
 
-  <div class="wrap">
-    <div class="project-detail active" data-panel="0">
-      <h3>UBC's Largest Annual Hackathon</h3>
-      <span class="p-tag">Project Management</span>
-
-      <blockquote class="case-quote">In a world that rewards being "always on," how might we design an experience that helps people set and keep boundaries to make recovery time feel socially safe, rewarding, and easy to sustain?</blockquote>
-
-      <div class="case-block">
-        <div class="case-label">Discovery</div>
-        <h4>To further understand the goal, our team explored</h4>
-        <p>This is your bio-style intro paragraph — the story before the photos. Explain what you set out to do, who it was for, and what you learned along the way. Replace this with your real discovery notes.</p>
-      </div>
-
-      <div class="p-photos">
-        <div class="p-photo">Add photo</div>
-        <div class="p-photo">Add photo</div>
-        <div class="p-photo">Add photo</div>
-      </div>
-
-      <div class="case-block">
-        <div class="case-label">Solution</div>
-        <h4>Instead of asking what you accomplished, it asks what you prioritized</h4>
-        <p>Describe the solution you built and why it worked. This is where the outcome and impact go — keep it concrete and specific.</p>
-      </div>
-
-      <div class="p-properties">
-        <div class="p-prop"><span>Tools used</span><span>Power BI, Excel, Figma</span></div>
-        <div class="p-prop"><span>Type</span><span>Project Management</span></div>
-        <div class="p-prop"><span>Website</span><span><a href="https://ubcyourco.example.com" target="_blank">ubcyourco.example.com</a></span></div>
-      </div>
+      <a class="project-link reveal" href="https://github.com/yourusername/project-two" target="_blank">
+        <article class="project-card">
+          <div class="project-img-wrap"><img src="assets/project-two.jpg" alt="Project Two" class="project-img"></div>
+          <div class="project-body">
+            <span class="p-tag">Category</span>
+            <h3>Project Title Two</h3>
+            <p>One or two sentences on what this project is and the outcome.</p>
+          </div>
+        </article>
+      </a>
     </div>
 
-    <div class="project-detail" data-panel="1">
-      <h3>Project Title Two</h3>
-      <span class="p-tag">Category</span>
-      <blockquote class="case-quote">Replace this with the guiding question or prompt behind this project.</blockquote>
-      <div class="case-block">
-        <div class="case-label">Discovery</div>
-        <h4>What you set out to explore</h4>
-        <p>Your bio-style intro paragraph goes here — the story before the photos.</p>
-      </div>
-      <div class="p-photos">
-        <div class="p-photo">Add photo</div>
-        <div class="p-photo">Add photo</div>
-      </div>
-      <div class="case-block">
-        <div class="case-label">Solution</div>
-        <h4>What you built</h4>
-        <p>Describe the outcome and impact here.</p>
-      </div>
-      <div class="p-properties">
-        <div class="p-prop"><span>Tools used</span><span>Tool, Tool, Tool</span></div>
-        <div class="p-prop"><span>Type</span><span>Category</span></div>
-        <div class="p-prop"><span>Website</span><span><a href="#">Link</a></span></div>
-      </div>
-    </div>
+    <p class="sub-label reveal">More Projects</p>
+    <div class="projects-grid">
+      <a class="project-link reveal" href="https://github.com/yourusername/project-three" target="_blank">
+        <article class="project-card">
+          <div class="project-img-wrap"><img src="assets/project-three.jpg" alt="Project Three" class="project-img"></div>
+          <div class="project-body">
+            <span class="p-tag">Category</span>
+            <h3>Project Title Three</h3>
+            <p>Short description of this project.</p>
+          </div>
+        </article>
+      </a>
 
-    <div class="project-detail" data-panel="2">
-      <h3>Project Title Three</h3>
-      <span class="p-tag">Category</span>
-      <blockquote class="case-quote">Replace this with the guiding question or prompt behind this project.</blockquote>
-      <div class="case-block">
-        <div class="case-label">Discovery</div>
-        <h4>What you set out to explore</h4>
-        <p>Your bio-style intro paragraph goes here — the story before the photos.</p>
-      </div>
-      <div class="p-photos">
-        <div class="p-photo">Add photo</div>
-        <div class="p-photo">Add photo</div>
-      </div>
-      <div class="case-block">
-        <div class="case-label">Solution</div>
-        <h4>What you built</h4>
-        <p>Describe the outcome and impact here.</p>
-      </div>
-      <div class="p-properties">
-        <div class="p-prop"><span>Tools used</span><span>Tool, Tool, Tool</span></div>
-        <div class="p-prop"><span>Type</span><span>Category</span></div>
-        <div class="p-prop"><span>Website</span><span><a href="#">Link</a></span></div>
-      </div>
-    </div>
+      <a class="project-link reveal" href="https://github.com/yourusername/project-four" target="_blank">
+        <article class="project-card">
+          <div class="project-img-wrap"><img src="assets/project-four.jpg" alt="Project Four" class="project-img"></div>
+          <div class="project-body">
+            <span class="p-tag">Category</span>
+            <h3>Project Title Four</h3>
+            <p>Short description of this project.</p>
+          </div>
+        </article>
+      </a>
 
-    <div class="project-detail" data-panel="3">
-      <h3>Project Title Four</h3>
-      <span class="p-tag">Category</span>
-      <blockquote class="case-quote">Replace this with the guiding question or prompt behind this project.</blockquote>
-      <div class="case-block">
-        <div class="case-label">Discovery</div>
-        <h4>What you set out to explore</h4>
-        <p>Your bio-style intro paragraph goes here — the story before the photos.</p>
-      </div>
-      <div class="p-photos">
-        <div class="p-photo">Add photo</div>
-        <div class="p-photo">Add photo</div>
-      </div>
-      <div class="case-block">
-        <div class="case-label">Solution</div>
-        <h4>What you built</h4>
-        <p>Describe the outcome and impact here.</p>
-      </div>
-      <div class="p-properties">
-        <div class="p-prop"><span>Tools used</span><span>Tool, Tool, Tool</span></div>
-        <div class="p-prop"><span>Type</span><span>Category</span></div>
-        <div class="p-prop"><span>Website</span><span><a href="#">Link</a></span></div>
-      </div>
-    </div>
+      <a class="project-link reveal" href="https://github.com/yourusername/project-five" target="_blank">
+        <article class="project-card">
+          <div class="project-img-wrap"><img src="assets/project-five.jpg" alt="Project Five" class="project-img"></div>
+          <div class="project-body">
+            <span class="p-tag">Category</span>
+            <h3>Project Title Five</h3>
+            <p>Short description of this project.</p>
+          </div>
+        </article>
+      </a>
 
-    <div class="project-detail" data-panel="4">
-      <h3>Project Title Five</h3>
-      <span class="p-tag">Category</span>
-      <blockquote class="case-quote">Replace this with the guiding question or prompt behind this project.</blockquote>
-      <div class="case-block">
-        <div class="case-label">Discovery</div>
-        <h4>What you set out to explore</h4>
-        <p>Your bio-style intro paragraph goes here — the story before the photos.</p>
-      </div>
-      <div class="p-photos">
-        <div class="p-photo">Add photo</div>
-        <div class="p-photo">Add photo</div>
-      </div>
-      <div class="case-block">
-        <div class="case-label">Solution</div>
-        <h4>What you built</h4>
-        <p>Describe the outcome and impact here.</p>
-      </div>
-      <div class="p-properties">
-        <div class="p-prop"><span>Tools used</span><span>Tool, Tool, Tool</span></div>
-        <div class="p-prop"><span>Type</span><span>Category</span></div>
-        <div class="p-prop"><span>Website</span><span><a href="#">Link</a></span></div>
-      </div>
-    </div>
-
-    <div class="project-detail" data-panel="5">
-      <h3>Project Title Six</h3>
-      <span class="p-tag">Category</span>
-      <blockquote class="case-quote">Replace this with the guiding question or prompt behind this project.</blockquote>
-      <div class="case-block">
-        <div class="case-label">Discovery</div>
-        <h4>What you set out to explore</h4>
-        <p>Your bio-style intro paragraph goes here — the story before the photos.</p>
-      </div>
-      <div class="p-photos">
-        <div class="p-photo">Add photo</div>
-        <div class="p-photo">Add photo</div>
-      </div>
-      <div class="case-block">
-        <div class="case-label">Solution</div>
-        <h4>What you built</h4>
-        <p>Describe the outcome and impact here.</p>
-      </div>
-      <div class="p-properties">
-        <div class="p-prop"><span>Tools used</span><span>Tool, Tool, Tool</span></div>
-        <div class="p-prop"><span>Type</span><span>Category</span></div>
-        <div class="p-prop"><span>Website</span><span><a href="#">Link</a></span></div>
-      </div>
+      <a class="project-link reveal" href="https://github.com/yourusername/project-six" target="_blank">
+        <article class="project-card">
+          <div class="project-img-wrap"><img src="assets/project-six.jpg" alt="Project Six" class="project-img"></div>
+          <div class="project-body">
+            <span class="p-tag">Category</span>
+            <h3>Project Title Six</h3>
+            <p>Short description of this project.</p>
+          </div>
+        </article>
+      </a>
     </div>
   </div>
 </section>
@@ -663,66 +552,36 @@
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
-  // CURSOR — small pink dot at tip + trail
-  const cursor = document.getElementById('cursor');
+
+  /* ---- Custom cursor + trail ---- */
+  const cursorEl = document.createElement('div');
+  cursorEl.className = 'cursor';
+  document.body.appendChild(cursorEl);
+  const trailColors = ['#2748c9', '#6a52c9', '#8ea2e8', '#b7a6e8'];
   document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-    // DOT TRAIL
+    cursorEl.style.left = e.clientX + 'px';
+    cursorEl.style.top = e.clientY + 'px';
     const dot = document.createElement('div');
-    const size = 5 + Math.random() * 7;
-    const colors = ['#C97B7E','#8FAE7A','#F0C4C6','#BCCFAA','#C49A35'];
+    const size = 4 + Math.random() * 6;
     Object.assign(dot.style, {
-      position: 'fixed',
-      left: e.clientX + 'px',
-      top: e.clientY + 'px',
-      width: size + 'px',
-      height: size + 'px',
-      borderRadius: '50%',
-      background: colors[Math.floor(Math.random() * colors.length)],
-      pointerEvents: 'none',
-      zIndex: '99998',
-      transform: 'translate(-50%, -50%)',
-      opacity: '0.8',
+      position: 'fixed', left: e.clientX + 'px', top: e.clientY + 'px',
+      width: size + 'px', height: size + 'px', borderRadius: '50%',
+      background: trailColors[Math.floor(Math.random() * trailColors.length)],
+      pointerEvents: 'none', zIndex: '9998',
+      transform: 'translate(-50%, -50%)', opacity: '0.75',
       transition: 'opacity 0.6s ease, transform 0.6s ease',
     });
     document.body.appendChild(dot);
     requestAnimationFrame(() => {
       dot.style.opacity = '0';
-      dot.style.transform = `translate(-50%, -50%) scale(0.1)`;
+      dot.style.transform = 'translate(-50%, -50%) scale(0.2)';
     });
     setTimeout(() => dot.remove(), 650);
   });
-
-  document.querySelectorAll('a,button,#sprout,.portfolio-item,.fact-chip').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursorEl.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => cursorEl.classList.remove('hovering'));
   });
-    /* ---- end of trial---- */
-
- // Pause on hover (only auto, not manual)
-    const wrapper = track.closest('.portfolio-marquee-wrapper');
-    wrapper.addEventListener('mouseenter', () => isPaused = true);
-    wrapper.addEventListener('mouseleave', () => { isPaused = false; activeDir = 0; manualVel = 0; });
-
-    // Arrow hold-to-glide
-    function startDir(d) { activeDir = d; }
-    function stopDir()   { activeDir = 0; }
-
-    leftBtn.addEventListener('mousedown',  () => startDir(-1));
-    rightBtn.addEventListener('mousedown', () => startDir(1));
-    document.addEventListener('mouseup',   stopDir);
-    leftBtn.addEventListener('mouseleave', stopDir);
-    rightBtn.addEventListener('mouseleave', stopDir);
-
-    // cursor hovering
-    [leftBtn, rightBtn].forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
-    });
-  })();
-   /* ---- end of trial---- */
-  document.getElementById('year').textContent = new Date().getFullYear();
 
   /* ---- Scroll reveal ---- */
   const revealEls = document.querySelectorAll('.reveal');
@@ -733,29 +592,19 @@
   }, { threshold: 0.15 });
   revealEls.forEach(el => io.observe(el));
 
-  /* stagger gallery cards */
-  document.querySelectorAll('.history-card').forEach((el, i) => {
+  /* stagger timeline items */
+  document.querySelectorAll('.t-item').forEach((el, i) => {
     el.style.transitionDelay = (i * 0.06) + 's';
   });
 
-  /* ---- Skills tabs ---- */
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  /* ---- Skills bubbles: dock + reveal panel ---- */
+  document.querySelectorAll('.bubble').forEach(bubble => {
+    bubble.addEventListener('click', () => {
+      document.getElementById('bubblesRow').classList.add('docked');
+      document.querySelectorAll('.bubble').forEach(b => b.classList.remove('active'));
+      bubble.classList.add('active');
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(btn.dataset.tab).classList.add('active');
-    });
-  });
-
-  /* ---- Project marquee -> detail panel switcher ---- */
-  document.querySelectorAll('.m-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const idx = card.dataset.project;
-      document.querySelectorAll('.m-card').forEach(c => c.classList.remove('active'));
-      document.querySelectorAll('.m-card[data-project="' + idx + '"]').forEach(c => c.classList.add('active'));
-      document.querySelectorAll('.project-detail').forEach(p => p.classList.remove('active'));
-      document.querySelector('.project-detail[data-panel="' + idx + '"]').classList.add('active');
+      document.getElementById(bubble.dataset.tab).classList.add('active');
     });
   });
 </script>
