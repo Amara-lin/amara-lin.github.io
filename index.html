@@ -662,6 +662,43 @@
 </footer>
 
 <script>
+  
+  // CURSOR — small pink dot at tip + trail
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    // DOT TRAIL
+    const dot = document.createElement('div');
+    const size = 5 + Math.random() * 7;
+    const colors = ['#C97B7E','#8FAE7A','#F0C4C6','#BCCFAA','#C49A35'];
+    Object.assign(dot.style, {
+      position: 'fixed',
+      left: e.clientX + 'px',
+      top: e.clientY + 'px',
+      width: size + 'px',
+      height: size + 'px',
+      borderRadius: '50%',
+      background: colors[Math.floor(Math.random() * colors.length)],
+      pointerEvents: 'none',
+      zIndex: '99998',
+      transform: 'translate(-50%, -50%)',
+      opacity: '0.8',
+      transition: 'opacity 0.6s ease, transform 0.6s ease',
+    });
+    document.body.appendChild(dot);
+    requestAnimationFrame(() => {
+      dot.style.opacity = '0';
+      dot.style.transform = `translate(-50%, -50%) scale(0.1)`;
+    });
+    setTimeout(() => dot.remove(), 650);
+  });
+
+  document.querySelectorAll('a,button,#sprout,.portfolio-item,.fact-chip').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+  });
+    /* ---- end of trial---- */
   document.getElementById('year').textContent = new Date().getFullYear();
 
   /* ---- Scroll reveal ---- */
