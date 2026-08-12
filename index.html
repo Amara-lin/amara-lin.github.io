@@ -75,10 +75,10 @@
   }
 
   /* ---------- HERO ---------- */
-  .hero { padding: 90px 0 80px; text-align: center; }
+  .hero { padding: 130px 0 110px; text-align: center; }
 
   .eyebrow { font-family: var(--script); font-style: italic; font-weight: 400; font-size: 1.3rem; color: var(--purple); margin-bottom: 4px; }
-  .hero h1 { font-size: clamp(2.6rem, 7vw, 4.2rem); line-height: 1.1; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(3.6rem, 10vw, 6.4rem); line-height: 1.05; margin-bottom: 20px; }
   .hero h1 em { font-style: italic; color: var(--blue); }
   .degree-line { font-size: 0.92rem; color: var(--blue); font-weight: 600; margin-bottom: 14px; }
   .hero p.bio { color: var(--text-dim); font-size: 1.1rem; max-width: 500px; margin: 0 auto 30px; }
@@ -192,40 +192,72 @@
   .info-card h3 { font-size: 1.08rem; margin: 4px 0 8px; }
   .info-card p { color: var(--text-dim); font-size: 0.92rem; }
 
-  /* ---------- CURVY CUT-PAPER BACKDROP (Community) ---------- */
-  .scrap-frame { position: relative; padding: 34px 14px 26px; }
-  .scrap-frame::before {
+  /* ---------- CURVY CUT-PAPER FULL-BLEED SECTION BACKGROUND ---------- */
+  .curvy-section { position: relative; z-index: 0; padding-top: 96px; padding-bottom: 96px; }
+  .curvy-section::before {
     content: '';
     position: absolute;
-    top: 2px; bottom: -4px; left: -2%; right: -2%;
-    background-color: #fffdf8;
-    border: 1px solid var(--border);
-    box-shadow: 0 26px 46px -26px rgba(26,28,38,0.28);
+    top: 0; bottom: 0; left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    z-index: -1;
     clip-path: polygon(0.0% 4.5%, 2.5% 5.84%, 5.0% 6.97%, 7.5% 7.73%, 10.0% 8.0%, 12.5% 7.73%, 15.0% 6.97%, 17.5% 5.84%, 20.0% 4.5%, 22.5% 3.16%, 25.0% 2.03%, 27.5% 1.27%, 30.0% 1.0%, 32.5% 1.27%, 35.0% 2.03%, 37.5% 3.16%, 40.0% 4.5%, 42.5% 5.84%, 45.0% 6.97%, 47.5% 7.73%, 50.0% 8.0%, 52.5% 7.73%, 55.0% 6.97%, 57.5% 5.84%, 60.0% 4.5%, 62.5% 3.16%, 65.0% 2.03%, 67.5% 1.27%, 70.0% 1.0%, 72.5% 1.27%, 75.0% 2.03%, 77.5% 3.16%, 80.0% 4.5%, 82.5% 5.84%, 85.0% 6.97%, 87.5% 7.73%, 90.0% 8.0%, 92.5% 7.73%, 95.0% 6.97%, 97.5% 5.84%, 100.0% 4.5%, 100.0% 95.5%, 97.5% 96.84%, 95.0% 97.97%, 92.5% 98.73%, 90.0% 99.0%, 87.5% 98.73%, 85.0% 97.97%, 82.5% 96.84%, 80.0% 95.5%, 77.5% 94.16%, 75.0% 93.03%, 72.5% 92.27%, 70.0% 92.0%, 67.5% 92.27%, 65.0% 93.03%, 62.5% 94.16%, 60.0% 95.5%, 57.5% 96.84%, 55.0% 97.97%, 52.5% 98.73%, 50.0% 99.0%, 47.5% 98.73%, 45.0% 97.97%, 42.5% 96.84%, 40.0% 95.5%, 37.5% 94.16%, 35.0% 93.03%, 32.5% 92.27%, 30.0% 92.0%, 27.5% 92.27%, 25.0% 93.03%, 22.5% 94.16%, 20.0% 95.5%, 17.5% 96.84%, 15.0% 97.97%, 12.5% 98.73%, 10.0% 99.0%, 7.5% 98.73%, 5.0% 97.97%, 2.5% 96.84%, 0.0% 95.5%);
-    transform: rotate(-1deg);
-    z-index: 0;
   }
-  .scrap-frame .card-grid { position: relative; z-index: 1; }
+  /* Darker blue at Community → lighter blue at Let's Connect */
+  #community.curvy-section::before {
+    background: linear-gradient(160deg, #1c3696, #2748c9 75%);
+  }
+  #more.curvy-section::before {
+    background: linear-gradient(160deg, #3457c9, #6f8bdc 80%);
+  }
+  #contact.curvy-section::before {
+    background: linear-gradient(160deg, #b7c9f4, #e6ecfb 75%);
+  }
+  #community.curvy-section h2,
+  #more.curvy-section h2 { color: #fff; }
 
-  /* ---------- MORE THINGS I'VE WORKED ON: POLAROIDS ---------- */
-  .polaroid-grid {
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 28px 22px;
-    padding: 10px 0 20px;
+  /* ---------- MORE THINGS I'VE WORKED ON: POLAROID MARQUEE ---------- */
+  .polaroid-marquee-wrapper {
+    overflow: hidden; width: 100%; position: relative;
+    padding: 26px 0 20px;
+  }
+  .polaroid-marquee-wrapper::before,
+  .polaroid-marquee-wrapper::after {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 90px;
+    z-index: 2; pointer-events: none;
+  }
+  #more.curvy-section .polaroid-marquee-wrapper::before {
+    left: 0; background: linear-gradient(to right, #4a68c9, transparent);
+  }
+  #more.curvy-section .polaroid-marquee-wrapper::after {
+    right: 0; background: linear-gradient(to left, #4a68c9, transparent);
+  }
+  .polaroid-track {
+    display: flex; gap: 26px; width: max-content;
+    animation: polaroidScrollLTR 32s linear infinite;
+  }
+  .polaroid-marquee-wrapper:hover .polaroid-track { animation-play-state: paused; }
+  @keyframes polaroidScrollLTR {
+    from { transform: translateX(-50%); }
+    to   { transform: translateX(0%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .polaroid-track { animation: none; }
   }
   .polaroid {
     background: #fff; border: 1px solid var(--border); border-radius: 3px;
-    padding: 14px 14px 22px; width: 190px;
-    box-shadow: 0 12px 24px -14px rgba(26,28,38,0.25);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 14px 14px 22px; width: 190px; flex-shrink: 0;
+    box-shadow: 0 12px 24px -14px rgba(26,28,38,0.35);
     text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  .polaroid:nth-child(1) { transform: rotate(-6deg); }
-  .polaroid:nth-child(2) { transform: rotate(4deg); }
-  .polaroid:nth-child(3) { transform: rotate(-3deg); }
-  .polaroid:nth-child(4) { transform: rotate(5deg); }
-  .polaroid:nth-child(5) { transform: rotate(-4deg); }
-  .polaroid:nth-child(6) { transform: rotate(3deg); }
-  .polaroid:hover { transform: rotate(0deg) translateY(-6px); box-shadow: 0 20px 32px -16px rgba(39,72,201,0.3); z-index: 2; }
+  .polaroid:nth-child(6n+1) { transform: rotate(-4deg); }
+  .polaroid:nth-child(6n+2) { transform: rotate(3deg); }
+  .polaroid:nth-child(6n+3) { transform: rotate(-2deg); }
+  .polaroid:nth-child(6n+4) { transform: rotate(4deg); }
+  .polaroid:nth-child(6n+5) { transform: rotate(-3deg); }
+  .polaroid:nth-child(6n+6) { transform: rotate(2deg); }
+  .polaroid:hover { transform: rotate(0deg) translateY(-6px) !important; box-shadow: 0 20px 32px -16px rgba(39,72,201,0.3); z-index: 2; }
   .polaroid-photo {
     width: 100%; aspect-ratio: 1/1; background: var(--surface);
     display: flex; align-items: center; justify-content: center;
@@ -270,20 +302,6 @@
   }
   .contact-pill:hover { transform: translateY(-2px); background: var(--blue); color: #fff; }
 
-  /* ---------- CURVY CUT-PAPER BACKDROP (Contact) ---------- */
-  .curvy-frame { position: relative; display: flex; justify-content: center; padding: 30px 0 26px; }
-  .curvy-frame::before {
-    content: '';
-    position: absolute;
-    top: -2px; bottom: -6px; left: 2%; right: 2%;
-    background: linear-gradient(135deg, #eef2fc, #f6f0fc);
-    border: 1px solid var(--border);
-    box-shadow: 0 30px 50px -28px rgba(106,82,201,0.32);
-    clip-path: polygon(0.0% 4.5%, 2.5% 5.84%, 5.0% 6.97%, 7.5% 7.73%, 10.0% 8.0%, 12.5% 7.73%, 15.0% 6.97%, 17.5% 5.84%, 20.0% 4.5%, 22.5% 3.16%, 25.0% 2.03%, 27.5% 1.27%, 30.0% 1.0%, 32.5% 1.27%, 35.0% 2.03%, 37.5% 3.16%, 40.0% 4.5%, 42.5% 5.84%, 45.0% 6.97%, 47.5% 7.73%, 50.0% 8.0%, 52.5% 7.73%, 55.0% 6.97%, 57.5% 5.84%, 60.0% 4.5%, 62.5% 3.16%, 65.0% 2.03%, 67.5% 1.27%, 70.0% 1.0%, 72.5% 1.27%, 75.0% 2.03%, 77.5% 3.16%, 80.0% 4.5%, 82.5% 5.84%, 85.0% 6.97%, 87.5% 7.73%, 90.0% 8.0%, 92.5% 7.73%, 95.0% 6.97%, 97.5% 5.84%, 100.0% 4.5%, 100.0% 95.5%, 97.5% 96.84%, 95.0% 97.97%, 92.5% 98.73%, 90.0% 99.0%, 87.5% 98.73%, 85.0% 97.97%, 82.5% 96.84%, 80.0% 95.5%, 77.5% 94.16%, 75.0% 93.03%, 72.5% 92.27%, 70.0% 92.0%, 67.5% 92.27%, 65.0% 93.03%, 62.5% 94.16%, 60.0% 95.5%, 57.5% 96.84%, 55.0% 97.97%, 52.5% 98.73%, 50.0% 99.0%, 47.5% 98.73%, 45.0% 97.97%, 42.5% 96.84%, 40.0% 95.5%, 37.5% 94.16%, 35.0% 93.03%, 32.5% 92.27%, 30.0% 92.0%, 27.5% 92.27%, 25.0% 93.03%, 22.5% 94.16%, 20.0% 95.5%, 17.5% 96.84%, 15.0% 97.97%, 12.5% 98.73%, 10.0% 99.0%, 7.5% 98.73%, 5.0% 97.97%, 2.5% 96.84%, 0.0% 95.5%);
-    transform: rotate(1deg);
-    z-index: 0;
-  }
-
   /* ---------- EXPLODING STAR ---------- */
   .star-burst {
     position: relative; height: 100px;
@@ -293,7 +311,10 @@
   .star-main {
     width: 46px; height: 46px;
     filter: drop-shadow(0 6px 12px rgba(246,194,49,0.5));
+    cursor: pointer;
+    transition: transform 0.2s ease;
   }
+  .star-main:hover { transform: scale(1.08); }
   .star-particle {
     position: absolute; top: 50%; left: 50%;
     margin: -8px 0 0 -8px;
@@ -495,10 +516,9 @@
 </section>
 
 <!-- ===== 5. COMMUNITY INITIATIVES ===== -->
-<section class="section" id="community">
+<section class="section curvy-section" id="community">
   <div class="wrap">
     <h2 class="reveal">Community Initiatives</h2>
-    <div class="scrap-frame">
     <div class="card-grid">
       <div class="info-card reveal">
         <div class="tag">Volunteer</div>
@@ -516,36 +536,62 @@
         <p>Same pattern for a third, if you have one.</p>
       </div>
     </div>
-    </div>
   </div>
 </section>
 
 <!-- ===== 7. MORE THINGS I'VE WORKED ON ===== -->
-<section class="section" id="more">
+<section class="section curvy-section" id="more">
   <div class="wrap">
     <h2 class="reveal">More Things I've Worked On</h2>
-    <div class="polaroid-grid">
-      <div class="polaroid reveal">
+  </div>
+  <div class="polaroid-marquee-wrapper">
+    <div class="polaroid-track" id="polaroidTrack">
+      <div class="polaroid">
         <div class="polaroid-photo"><img src="assets/more-1.jpg" alt="Dance Competition"></div>
         <div class="polaroid-caption">Dance Competition</div>
       </div>
-      <div class="polaroid reveal">
+      <div class="polaroid">
         <div class="polaroid-photo"><img src="assets/more-2.jpg" alt="Conference"></div>
         <div class="polaroid-caption">Conference</div>
       </div>
-      <div class="polaroid reveal">
+      <div class="polaroid">
         <div class="polaroid-photo"><img src="assets/more-3.jpg" alt="Workshop I Taught"></div>
         <div class="polaroid-caption">Workshop I Taught</div>
       </div>
-      <div class="polaroid reveal">
+      <div class="polaroid">
         <div class="polaroid-photo"><img src="assets/more-4.jpg" alt="Magazine I Made"></div>
         <div class="polaroid-caption">Magazine I Made</div>
       </div>
-      <div class="polaroid reveal">
+      <div class="polaroid">
         <div class="polaroid-photo"><img src="assets/more-5.jpg" alt=""></div>
         <div class="polaroid-caption">Add Caption</div>
       </div>
-      <div class="polaroid reveal">
+      <div class="polaroid">
+        <div class="polaroid-photo"><img src="assets/more-6.jpg" alt=""></div>
+        <div class="polaroid-caption">Add Caption</div>
+      </div>
+      <!-- duplicated set for a seamless loop -->
+      <div class="polaroid" aria-hidden="true">
+        <div class="polaroid-photo"><img src="assets/more-1.jpg" alt=""></div>
+        <div class="polaroid-caption">Dance Competition</div>
+      </div>
+      <div class="polaroid" aria-hidden="true">
+        <div class="polaroid-photo"><img src="assets/more-2.jpg" alt=""></div>
+        <div class="polaroid-caption">Conference</div>
+      </div>
+      <div class="polaroid" aria-hidden="true">
+        <div class="polaroid-photo"><img src="assets/more-3.jpg" alt=""></div>
+        <div class="polaroid-caption">Workshop I Taught</div>
+      </div>
+      <div class="polaroid" aria-hidden="true">
+        <div class="polaroid-photo"><img src="assets/more-4.jpg" alt=""></div>
+        <div class="polaroid-caption">Magazine I Made</div>
+      </div>
+      <div class="polaroid" aria-hidden="true">
+        <div class="polaroid-photo"><img src="assets/more-5.jpg" alt=""></div>
+        <div class="polaroid-caption">Add Caption</div>
+      </div>
+      <div class="polaroid" aria-hidden="true">
         <div class="polaroid-photo"><img src="assets/more-6.jpg" alt=""></div>
         <div class="polaroid-caption">Add Caption</div>
       </div>
@@ -554,9 +600,8 @@
 </section>
 
 <!-- ===== 8. CONTACT ===== -->
-<section class="section" id="contact">
+<section class="section curvy-section" id="contact">
   <div class="wrap">
-    <div class="curvy-frame">
     <div class="contact-box reveal">
       <div class="contact-box-text">
         <h2>Let's connect</h2>
@@ -569,12 +614,11 @@
       </div>
       <div class="contact-box-photo">Add a photo here</div>
     </div>
-    </div>
   </div>
 </section>
 
-<div class="star-burst" id="starBurst" aria-hidden="true">
-  <svg class="star-main" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+<div class="star-burst" id="starBurst">
+  <svg class="star-main" id="starMain" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" role="button" aria-label="Click to make the star burst" tabindex="0">
     <path d="M30 2 L37 22 L58 22 L41 35 L47 56 L30 43 L13 56 L19 35 L2 22 L23 22 Z" fill="#f6c231"/>
   </svg>
 </div>
@@ -638,11 +682,15 @@
 
   /* ---- Exploding star ---- */
   const starBurst = document.getElementById('starBurst');
+  const starMain = document.getElementById('starMain');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let starBusy = false;
 
   function explodeStar() {
-    const mainStar = starBurst.querySelector('.star-main');
-    if (reduceMotion) { mainStar.style.opacity = '1'; return; }
+    if (starBusy) return;
+    starBusy = true;
+
+    if (reduceMotion) { starBusy = false; return; }
 
     const starPath = "M30 2 L37 22 L58 22 L41 35 L47 56 L30 43 L13 56 L19 35 L2 22 L23 22 Z";
     const colors = ['#f6c231', '#fbe08a', '#f2a93c'];
@@ -675,20 +723,26 @@
       setTimeout(() => svg.remove(), 1500);
     }
 
-    mainStar.style.transition = 'transform 0.3s ease, opacity 0.4s ease 0.25s';
-    mainStar.style.transform = 'scale(1.3)';
-    setTimeout(() => { mainStar.style.opacity = '0'; }, 300);
+    starMain.style.transition = 'transform 0.3s ease, opacity 0.4s ease 0.25s';
+    starMain.style.transform = 'scale(1.3)';
+    setTimeout(() => { starMain.style.opacity = '0'; }, 300);
+
+    // reset so it can be clicked again
+    setTimeout(() => {
+      starMain.style.transition = 'none';
+      starMain.style.transform = 'scale(1)';
+      starMain.style.opacity = '1';
+      requestAnimationFrame(() => {
+        starMain.style.transition = 'transform 0.2s ease';
+      });
+      starBusy = false;
+    }, 1400);
   }
 
-  const starObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        explodeStar();
-        starObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.6 });
-  starObserver.observe(starBurst);
+  starMain.addEventListener('click', explodeStar);
+  starMain.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); explodeStar(); }
+  });
 
   /* ---- Skills bubbles: dock + reveal panel ---- */
   document.querySelectorAll('.bubble').forEach(bubble => {
